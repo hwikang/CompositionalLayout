@@ -34,8 +34,23 @@ class ViewController: UIViewController {
         collectionView.register(CategoryCollectionViewCell.self, forCellWithReuseIdentifier: "CategoryCell")
         setDataSource()
     }
+    
+    private func createLayout() -> UICollectionViewCompositionalLayout{
+        return UICollectionViewCompositionalLayout(sectionProvider: {[weak self] sectionIndex, environment in
+            
+            switch sectionIndex {
+            case 0:
+                return self?.createBannerSection()
+            case 1:
+                return self?.createCategorySection()
 
-
+            default:
+                return self?.createBannerSection()
+            }
+            
+        })
+    }
+    
     
     private func setDataSource() {
         
@@ -46,6 +61,12 @@ class ViewController: UIViewController {
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BannerCell", for: indexPath) as? BannerCollectionViewCell else {fatalError()}
                 if let text = data.text {
                     cell.configure(text: text, url: data.imageUrl)
+                }
+                return cell
+            case .normalCarousel(let data):
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCell", for: indexPath) as? CategoryCollectionViewCell else {fatalError()}
+                if let name = data.name {
+                    cell.configure(name: name, url: data.imageUrl)
                 }
                 return cell
             default:
@@ -66,32 +87,43 @@ class ViewController: UIViewController {
             Item.banner(HomeItem(text: "Banner Two", imageUrl: placeHolderUrl)),
             Item.banner(HomeItem(text: "Banner Three", imageUrl: placeHolderUrl))
             ])
-        print("Snapshot appended")
+        
+        snapshot.appendSections([Section(id: "category")])
+        snapshot.appendItems([
+            Item.normalCarousel(HomeItem(name: "포장", imageUrl: placeHolderUrl)),
+            Item.normalCarousel(HomeItem(name: "신규맛집", imageUrl: placeHolderUrl)),
+            Item.normalCarousel(HomeItem(name: "1인분", imageUrl: placeHolderUrl)),
+            Item.normalCarousel(HomeItem(name: "한식", imageUrl: placeHolderUrl)),
+            Item.normalCarousel(HomeItem(name: "치킨", imageUrl: placeHolderUrl)),
+            Item.normalCarousel(HomeItem(name: "분식", imageUrl: placeHolderUrl)),
+            ])
+        
         dataSource?.apply(snapshot)
     }
     
-    private func createLayout() -> UICollectionViewCompositionalLayout{
-        return UICollectionViewCompositionalLayout(sectionProvider: {[weak self] sectionIndex, environment in
-            
-            switch sectionIndex {
-            case 0:
-                return self?.createBannerSection()
-            default:
-                return self?.createBannerSection()
-            }
-            
-        })
-    }
-    
     private func createBannerSection() -> NSCollectionLayoutSection {
-            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
-            
+
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(200))
 
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .groupPaging
+        return section
+    }
+    
+    private func createCategorySection() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.25), heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        item.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 25, bottom: 15, trailing: 0)
+
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(150))
+
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        let section = NSCollectionLayoutSection(group: group)
+        section.orthogonalScrollingBehavior = .continuous
         return section
     }
 

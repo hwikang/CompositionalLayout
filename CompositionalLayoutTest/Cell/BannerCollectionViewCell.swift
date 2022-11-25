@@ -12,17 +12,15 @@ import UIKit
 class BannerCollectionViewCell: UICollectionViewCell {
   
     let label = UILabel()
-
     let backgroundImage = UIImageView()
-
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
-//        self.backgroundColor = .red
         
         self.addSubview(backgroundImage)
         self.addSubview(label)
 
+        
         label.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
