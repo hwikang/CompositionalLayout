@@ -33,7 +33,7 @@ class ViewController: UIViewController {
         collectionView.register(BannerCollectionViewCell.self, forCellWithReuseIdentifier: "BannerCell")
         collectionView.register(NormalCarouselCollectionViewCell.self, forCellWithReuseIdentifier: "NormalCarouselCell")
         collectionView.register(SquareCarouselCollectionViewCell.self, forCellWithReuseIdentifier: "SqaureCarouselCell")
-
+        collectionView.register(SqaureCarouselHeaderView.self, forSupplementaryViewOfKind: "SqaureCarouselHeader", withReuseIdentifier: "SqaureCarouselHeader")
         setDataSource()
     }
     
@@ -76,10 +76,15 @@ class ViewController: UIViewController {
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SqaureCarouselCell", for: indexPath) as? SquareCarouselCollectionViewCell else {fatalError()}
                 cell.configure(title: data.name, url: data.imageUrl, review: "\(data.reviewPoint)(\(data.reviewCount))")
                 return cell
-            default:
-                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BannerCell", for: indexPath) as? BannerCollectionViewCell else {fatalError()}
-                return cell
+           
             }
+        }
+        
+        dataSource?.supplementaryViewProvider = { (collectionView, kind, indexPath) -> UICollectionReusableView in
+            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "SqaureCarouselHeader", for: indexPath) as? SqaureCarouselHeaderView else { fatalError()}
+            print("Section \(indexPath)")
+            header.configure(title: "이츠 오리지널", desc: "쿠팡이츠에서 먼저 맛볼 수 있는 맛집입니다")
+            return header
         }
         
         snapshot()
@@ -144,6 +149,8 @@ class ViewController: UIViewController {
     }
     
     private func createSqaureCarouselSection() -> NSCollectionLayoutSection {
+        let headerSize  = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(44))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "SqaureCarouselHeader", alignment: .topLeading)
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 15)
@@ -151,10 +158,10 @@ class ViewController: UIViewController {
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.65), heightDimension: .estimated(200))
 
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
 
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 20)
+        section.boundarySupplementaryItems = [header]
         section.orthogonalScrollingBehavior = .continuous
         return section
 
