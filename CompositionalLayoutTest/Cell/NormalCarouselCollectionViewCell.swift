@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CategoryCollectionViewCell: UICollectionViewCell {
+class NormalCarouselCollectionViewCell: UICollectionViewCell {
     
       let label = UILabel()
       let image = UIImageView()
@@ -18,13 +18,11 @@ class CategoryCollectionViewCell: UICollectionViewCell {
           self.addSubview(image)
           self.addSubview(label)
 
-//          self.backgroundColor = .red
           image.snp.makeConstraints { make in
               make.top.left.right.equalToSuperview()
               make.height.equalToSuperview().multipliedBy(0.6)
           }
           label.snp.makeConstraints { make in
-//              make.top.equalTo(image.snp.height)
               make.centerX.bottom.equalToSuperview()
           }
       }

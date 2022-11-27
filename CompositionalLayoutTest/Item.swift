@@ -16,7 +16,7 @@ struct Section: Hashable {
 enum Item: Hashable {
     case banner(HomeItem)
     case normalCarousel(HomeItem)
-    case circleCarousel(HomeItem)
+    case squareCarousel(RestaurantItem)
 }
 
 struct HomeItem: Hashable {
@@ -26,13 +26,10 @@ struct HomeItem: Hashable {
 }
 
 
-//
-//struct CategoryItem: Hashable {
-//    let name: String
-//    let imageUrl: String
-//}
-//
-//struct RestaurantItem: Hashable {
-//    let name: String
-//    let imageUrl: String
-//}
+struct RestaurantItem: Hashable {
+    let name: String
+    let reviewPoint: Float
+    let reviewCount: Int
+    let imageUrl: String
+
+}
