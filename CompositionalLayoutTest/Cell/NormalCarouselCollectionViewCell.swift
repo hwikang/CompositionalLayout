@@ -28,7 +28,6 @@ class NormalCarouselCollectionViewCell: UICollectionViewCell {
       }
       
       public func configure(name:String, url:String){
-          print(name)
           label.text = name
           image.load(url: url)
       }

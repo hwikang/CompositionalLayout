@@ -13,7 +13,7 @@ class ViewModel {
     private let network: MovieNetwork
     
     struct Input {
-        let trigger: Observable<Void>
+        let trigger: Observable<Bool>
     }
     
     struct Output{
@@ -25,8 +25,8 @@ class ViewModel {
     }
     
     func transform(input: Input) -> Output {
-        let list = input.trigger.flatMapLatest { () -> Observable<NowPlayingModel> in
-
+        let list = input.trigger.flatMapLatest { _ -> Observable<NowPlayingModel> in
+            print("")
             return self.network.getNowPlayingList()
                 
         }

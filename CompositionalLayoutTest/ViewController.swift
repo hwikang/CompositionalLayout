@@ -18,10 +18,15 @@ class ViewController: UIViewController {
     }()
     private var dataSource: UICollectionViewDiffableDataSource<Section, Item>?
     private let viewModel: ViewModel = ViewModel()
+    private let disposeBag = DisposeBag()
+    private let trigger = PublishSubject<Bool>()
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
         bindViewModel()
+
+        trigger.onNext(true)
+
     }
     
     private func setUI(){
@@ -33,19 +38,34 @@ class ViewController: UIViewController {
     }
     
     private func bindViewModel() {
-        let viewWillAppear = rx.sentMessage(#selector(UIViewController.viewWillAppear(_:)))
-            .map{_ in Void()}
+//        let viewWillAppear = rx.sentMessage(#selector(UIViewController.viewWillAppear(_:)))
+//            .map{_ in Void()}
 
-        let pull = collectionView.refreshControl?.rx
-            .controlEvent(.valueChanged)
-            .flatMapLatest{ Observable<Void>.of()}
+//        let pull = collectionView.refreshControl?.rx
+//            .controlEvent(.valueChanged)
+//            .flatMapLatest{ Observable<Void>.of()}
         
-        let input = ViewModel.Input(trigger: viewWillAppear)
+        let input = ViewModel.Input(trigger: trigger.asObservable())
         let output = viewModel.transform(input: input)
         
-        output.list.subscribe { event in
-            print("Event \(event)")
-        }
+        output.list.subscribe {[weak self] event in
+            let movieList = event.element?.results
+            var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+
+            snapshot.appendSections([Section(id: "Banner")])
+
+            if let itemList = movieList?.map({ movie in
+                return Item.banner(MovieItem(title: movie.title, overView: movie.overview, posterUrl: movie.poster_path))
+
+            }) {
+                print("itemList \(itemList)")
+                snapshot.appendItems(itemList )
+
+            }
+
+            self?.dataSource?.apply(snapshot)
+        }.disposed(by: disposeBag)
+        
     }
  
 
@@ -84,13 +104,16 @@ extension ViewController {
        private func setDataSource() {
            
            dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { (collectionView, indexPath, item ) -> UICollectionViewCell? in
-               print("item \(item)")
+//               print("item \(item)")
                switch item {
                case .banner(let data):
                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BannerCell", for: indexPath) as? BannerCollectionViewCell else {fatalError()}
-                   if let text = data.text {
-                       cell.configure(text: text, url: data.imageUrl)
-                   }
+                   print("data \(data)")
+                   cell.configure(text: data.title, url: data.posterUrl)
+
+//                   if let text = data.text {
+//                       cell.configure(text: text, url: data.imageUrl)
+//                   }
                    return cell
                case .normalCarousel(let data):
                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NormalCarouselCell", for: indexPath) as? NormalCarouselCollectionViewCell else {fatalError()}
@@ -112,19 +135,19 @@ extension ViewController {
                header.configure(title: "이츠 오리지널", desc: "쿠팡이츠에서 먼저 맛볼 수 있는 맛집입니다")
                return header
            }
-           
-           snapshot()
+
+//           snapshot()
 
        }
        
        private func snapshot() {
            var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
-           snapshot.appendSections([Section(id: "banner")])
-           snapshot.appendItems([
-               Item.banner(HomeItem(text: "Banner One", imageUrl: placeHolderUrl)),
-               Item.banner(HomeItem(text: "Banner Two", imageUrl: placeHolderUrl)),
-               Item.banner(HomeItem(text: "Banner Three", imageUrl: placeHolderUrl))
-               ])
+//           snapshot.appendSections([Section(id: "banner")])
+//           snapshot.appendItems([
+//               Item.banner(HomeItem(text: "Banner One", imageUrl: placeHolderUrl)),
+//               Item.banner(HomeItem(text: "Banner Two", imageUrl: placeHolderUrl)),
+//               Item.banner(HomeItem(text: "Banner Three", imageUrl: placeHolderUrl))
+//               ])
            
            snapshot.appendSections([Section(id: "normalCarousel")])
            snapshot.appendItems([
