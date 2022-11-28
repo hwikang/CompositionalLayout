@@ -19,6 +19,11 @@
 		BFBEA62729307B14001DEB4A /* BannerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBEA62629307B14001DEB4A /* BannerCollectionViewCell.swift */; };
 		BFBEA62A29307B77001DEB4A /* NormalCarouselCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBEA62929307B77001DEB4A /* NormalCarouselCollectionViewCell.swift */; };
 		BFC1917229332B9C0097CCAB /* SquareCarouselCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC1917129332B9C0097CCAB /* SquareCarouselCollectionViewCell.swift */; };
+		BFC191752933416E0097CCAB /* RxAlamofire in Frameworks */ = {isa = PBXBuildFile; productRef = BFC191742933416E0097CCAB /* RxAlamofire */; };
+		BFC19177293341790097CCAB /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC19176293341790097CCAB /* Network.swift */; };
+		BFC1917A293344E20097CCAB /* NetworkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC19179293344E20097CCAB /* NetworkProvider.swift */; };
+		BFC1917D293345590097CCAB /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC1917C293345590097CCAB /* Movie.swift */; };
+		BFC1917F293476060097CCAB /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC1917E293476060097CCAB /* ViewModel.swift */; };
 		BFFC960C2930826F00147B30 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFC960B2930826F00147B30 /* Item.swift */; };
 		BFFC960F2930A03D00147B30 /* Const.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFC960E2930A03D00147B30 /* Const.swift */; };
 		BFFC96122930A5CF00147B30 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = BFFC96112930A5CF00147B30 /* SnapKit */; };
@@ -59,6 +64,10 @@
 		BFBEA62629307B14001DEB4A /* BannerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerCollectionViewCell.swift; sourceTree = "<group>"; };
 		BFBEA62929307B77001DEB4A /* NormalCarouselCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NormalCarouselCollectionViewCell.swift; sourceTree = "<group>"; };
 		BFC1917129332B9C0097CCAB /* SquareCarouselCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareCarouselCollectionViewCell.swift; sourceTree = "<group>"; };
+		BFC19176293341790097CCAB /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
+		BFC19179293344E20097CCAB /* NetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkProvider.swift; sourceTree = "<group>"; };
+		BFC1917C293345590097CCAB /* Movie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
+		BFC1917E293476060097CCAB /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		BFFC960B2930826F00147B30 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		BFFC960E2930A03D00147B30 /* Const.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Const.swift; sourceTree = "<group>"; };
 		BFFC96142930AA9000147B30 /* UIImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageView.swift; sourceTree = "<group>"; };
@@ -70,6 +79,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFFC96122930A5CF00147B30 /* SnapKit in Frameworks */,
+				BFC191752933416E0097CCAB /* RxAlamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -116,7 +126,9 @@
 				BFBEA5F629307AE1001DEB4A /* AppDelegate.swift */,
 				BFBEA5F829307AE1001DEB4A /* SceneDelegate.swift */,
 				BFBEA5FA29307AE1001DEB4A /* ViewController.swift */,
+				BFC1917E293476060097CCAB /* ViewModel.swift */,
 				BFFC960B2930826F00147B30 /* Item.swift */,
+				BFC1917B2933454A0097CCAB /* Domain */,
 				BFFC96132930AA8600147B30 /* Extension */,
 				BFFC960D2930A00400147B30 /* Network */,
 				BFBEA62829307B19001DEB4A /* Cell */,
@@ -155,10 +167,20 @@
 			path = Cell;
 			sourceTree = "<group>";
 		};
+		BFC1917B2933454A0097CCAB /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				BFC1917C293345590097CCAB /* Movie.swift */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
 		BFFC960D2930A00400147B30 /* Network */ = {
 			isa = PBXGroup;
 			children = (
 				BFFC960E2930A03D00147B30 /* Const.swift */,
+				BFC19176293341790097CCAB /* Network.swift */,
+				BFC19179293344E20097CCAB /* NetworkProvider.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -189,6 +211,7 @@
 			name = CompositionalLayoutTest;
 			packageProductDependencies = (
 				BFFC96112930A5CF00147B30 /* SnapKit */,
+				BFC191742933416E0097CCAB /* RxAlamofire */,
 			);
 			productName = CompositionalLayoutTest;
 			productReference = BFBEA5F329307AE1001DEB4A /* CompositionalLayoutTest.app */;
@@ -264,6 +287,7 @@
 			mainGroup = BFBEA5EA29307AE1001DEB4A;
 			packageReferences = (
 				BFFC96102930A5CF00147B30 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				BFC191732933416E0097CCAB /* XCRemoteSwiftPackageReference "RxAlamofire" */,
 			);
 			productRefGroup = BFBEA5F429307AE1001DEB4A /* Products */;
 			projectDirPath = "";
@@ -308,12 +332,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFC19177293341790097CCAB /* Network.swift in Sources */,
 				BFFC96152930AA9000147B30 /* UIImageView.swift in Sources */,
+				BFC1917D293345590097CCAB /* Movie.swift in Sources */,
 				BFBEA5FB29307AE1001DEB4A /* ViewController.swift in Sources */,
 				BFBEA62729307B14001DEB4A /* BannerCollectionViewCell.swift in Sources */,
 				BFBEA5F729307AE1001DEB4A /* AppDelegate.swift in Sources */,
+				BFC1917F293476060097CCAB /* ViewModel.swift in Sources */,
 				BFBEA62A29307B77001DEB4A /* NormalCarouselCollectionViewCell.swift in Sources */,
 				BFFC960C2930826F00147B30 /* Item.swift in Sources */,
+				BFC1917A293344E20097CCAB /* NetworkProvider.swift in Sources */,
 				BFBEA5F929307AE1001DEB4A /* SceneDelegate.swift in Sources */,
 				BFC1917229332B9C0097CCAB /* SquareCarouselCollectionViewCell.swift in Sources */,
 				BFFC960F2930A03D00147B30 /* Const.swift in Sources */,
@@ -654,6 +682,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		BFC191732933416E0097CCAB /* XCRemoteSwiftPackageReference "RxAlamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RxSwiftCommunity/RxAlamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
 		BFFC96102930A5CF00147B30 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
@@ -665,6 +701,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		BFC191742933416E0097CCAB /* RxAlamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BFC191732933416E0097CCAB /* XCRemoteSwiftPackageReference "RxAlamofire" */;
+			productName = RxAlamofire;
+		};
 		BFFC96112930A5CF00147B30 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = BFFC96102930A5CF00147B30 /* XCRemoteSwiftPackageReference "SnapKit" */;
