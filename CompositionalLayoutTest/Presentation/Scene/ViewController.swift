@@ -23,6 +23,8 @@ class ViewController: UIViewController {
         return collectionView
     }()
     private var dataSource: UICollectionViewDiffableDataSource<Section, Item>?
+    private var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+
     private let viewModel: ViewModel = ViewModel()
     private let disposeBag = DisposeBag()
     private let trigger = PublishSubject<Bool>()
@@ -58,24 +60,31 @@ class ViewController: UIViewController {
         let input = ViewModel.Input(trigger: trigger.asObservable())
         let output = viewModel.transform(input: input)
         
-        output.list.subscribe {[weak self] event in
-            let movieList = event.element?.results
-            var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+        output.nowPlayingList
+            .observeOn(MainScheduler.instance)
+            .bind { [unowned self] list in
+                let itemList = list.results.map({ movie in
+                    return Item.banner(MovieItem(title: movie.title, overView: movie.overview, posterUrl: movie.poster_path, vote: "\(movie.vote_average)(\(movie.vote_count))"))
 
-            snapshot.appendSections([Section(id: "Banner")])
+                })
+                self.snapshot.appendItems(itemList, toSection: Section(id: "Banner"))
+                self.dataSource?.apply(self.snapshot)
+            
+            }.disposed(by: disposeBag)
+        
+        output.popularList
+            .delay(.milliseconds(1000), scheduler: MainScheduler.instance)
+            .observeOn(MainScheduler.instance)
+            .bind { [unowned self] list in
+                let itemList = list.results.map({ movie in
+                    return Item.normalCarousel(MovieItem(title: movie.title, overView: movie.overview, posterUrl: movie.poster_path, vote: "\(movie.vote_average)(\(movie.vote_count))"))
 
-            if let itemList = movieList?.map({ movie in
-                
-                return Item.banner(MovieItem(title: movie.title, overView: movie.overview, posterUrl: movie.poster_path, vote: "\(movie.vote_average)(\(movie.vote_count))"))
-
-            }) {
-                print("itemList \(itemList)")
-                snapshot.appendItems(itemList )
-
-            }
-
-            self?.dataSource?.apply(snapshot)
-        }.disposed(by: disposeBag)
+                })
+                self.snapshot.appendItems(itemList, toSection: Section(id: "NormalCarousel"))
+                self.dataSource?.apply(self.snapshot)
+            
+            }.disposed(by: disposeBag)
+        
         
     }
     
@@ -94,15 +103,17 @@ extension ViewController {
     
        private func configureCollectionView() {
            collectionView.register(NowPlayingCollectionViewCell.self, forCellWithReuseIdentifier: NowPlayingCollectionViewCell.id)
-           collectionView.register(NormalCarouselCollectionViewCell.self, forCellWithReuseIdentifier: "NormalCarouselCell")
+           collectionView.register(NormalCarouselCollectionViewCell.self, forCellWithReuseIdentifier: NormalCarouselCollectionViewCell.id)
            collectionView.register(SquareCarouselCollectionViewCell.self, forCellWithReuseIdentifier: "SqaureCarouselCell")
            collectionView.register(SqaureCarouselHeaderView.self, forSupplementaryViewOfKind: "SqaureCarouselHeader", withReuseIdentifier: "SqaureCarouselHeader")
+           self.snapshot.appendSections([Section(id: "Banner")])
+           self.snapshot.appendSections([Section(id: "NormalCarousel")])
+
            setDataSource()
        }
        
        private func createLayout() -> UICollectionViewCompositionalLayout{
            return UICollectionViewCompositionalLayout(sectionProvider: {[weak self] sectionIndex, environment in
-               
                switch sectionIndex {
                case 0:
                    return self?.createNowPlayingSection()
@@ -125,22 +136,14 @@ extension ViewController {
                switch item {
                case .banner(let data):
                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NowPlayingCollectionViewCell.id, for: indexPath) as? NowPlayingCollectionViewCell else {fatalError()}
-                   print("data \(data)")
                    cell.configure(title: data.title, overview: data.overView,vote: data.vote, url: data.posterUrl)
-
-//                   if let text = data.text {
-//                       cell.configure(text: text, url: data.imageUrl)
-//                   }
                    return cell
                case .normalCarousel(let data):
-                   guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NormalCarouselCell", for: indexPath) as? NormalCarouselCollectionViewCell else {fatalError()}
-                   if let name = data.name {
-                       cell.configure(name: name, url: data.imageUrl)
-                   }
+                   guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NormalCarouselCollectionViewCell.id, for: indexPath) as? NormalCarouselCollectionViewCell else {fatalError()}
+                   cell.configure(name: data.title, vote: data.vote, url: data.posterUrl)
                    return cell
                case .squareCarousel(let data):
                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SqaureCarouselCell", for: indexPath) as? SquareCarouselCollectionViewCell else {fatalError()}
-                   cell.configure(title: data.name, url: data.imageUrl, review: "\(data.reviewPoint)(\(data.reviewCount))")
                    return cell
               
                }
@@ -153,39 +156,7 @@ extension ViewController {
                return header
            }
 
-//           snapshot()
 
-       }
-       
-       private func snapshot() {
-           var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
-//           snapshot.appendSections([Section(id: "banner")])
-//           snapshot.appendItems([
-//               Item.banner(HomeItem(text: "Banner One", imageUrl: placeHolderUrl)),
-//               Item.banner(HomeItem(text: "Banner Two", imageUrl: placeHolderUrl)),
-//               Item.banner(HomeItem(text: "Banner Three", imageUrl: placeHolderUrl))
-//               ])
-           
-           snapshot.appendSections([Section(id: "normalCarousel")])
-           snapshot.appendItems([
-               Item.normalCarousel(HomeItem(name: "포장", imageUrl: placeHolderUrl)),
-               Item.normalCarousel(HomeItem(name: "신규맛집", imageUrl: placeHolderUrl)),
-               Item.normalCarousel(HomeItem(name: "1인분", imageUrl: placeHolderUrl)),
-               Item.normalCarousel(HomeItem(name: "한식", imageUrl: placeHolderUrl)),
-               Item.normalCarousel(HomeItem(name: "치킨", imageUrl: placeHolderUrl)),
-               Item.normalCarousel(HomeItem(name: "분식", imageUrl: placeHolderUrl)),
-               ])
-       
-           snapshot.appendSections([Section(id: "sqaureCarousel")])
-           snapshot.appendItems([
-               Item.squareCarousel(RestaurantItem(name: "버거슬럽", reviewPoint: 4.9, reviewCount: 235,imageUrl: placeHolderUrl)),
-               Item.squareCarousel(RestaurantItem(name: "남도반주", reviewPoint: 4.7, reviewCount: 125,imageUrl: placeHolderUrl)),
-               Item.squareCarousel(RestaurantItem(name: "아모르미오", reviewPoint: 5.0, reviewCount: 863,imageUrl: placeHolderUrl)),
-               Item.squareCarousel(RestaurantItem(name: "두 셰프의 무회", reviewPoint: 4.9, reviewCount: 2637,imageUrl: placeHolderUrl)),
-               Item.squareCarousel(RestaurantItem(name: "남성역골목시장 수라축산", reviewPoint: 4.9, reviewCount: 179,imageUrl: placeHolderUrl))
-           ])
-           
-           dataSource?.apply(snapshot)
        }
        
        private func createNowPlayingSection() -> NSCollectionLayoutSection {
@@ -202,11 +173,11 @@ extension ViewController {
        }
        
        private func createNormalCarouselSection() -> NSCollectionLayoutSection {
-           let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.25), heightDimension: .fractionalHeight(1.0))
+           let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
            let item = NSCollectionLayoutItem(layoutSize: itemSize)
            item.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 25, bottom: 15, trailing: 0)
 
-           let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(150))
+           let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.6), heightDimension: .estimated(Layout.NormalCarouselCellHeight))
 
            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
            let section = NSCollectionLayoutSection(group: group)

@@ -17,7 +17,8 @@ class ViewModel {
     }
     
     struct Output{
-        let list: Observable<NowPlayingModel>
+        let nowPlayingList: Observable<MovieListModel>
+        let popularList: Observable<MovieListModel>
     }
     init() {
         
@@ -25,15 +26,25 @@ class ViewModel {
     }
     
     func transform(input: Input) -> Output {
-        let list = input.trigger.flatMapLatest { _ -> Observable<NowPlayingModel> in
+        let nowPlayingList = input.trigger.flatMapLatest { _ -> Observable<MovieListModel> in
             return self.network.getNowPlayingList()
+
                 .catchError({ error in
                     print("Catch \(error)")
-                    return .just(NowPlayingModel.placeHolder)
+                    return .just(MovieListModel.placeHolder)
                 })
                 
         }
         
-        return Output(list: list)
+        let popularList = input.trigger.flatMapLatest { _ -> Observable<MovieListModel> in
+            return self.network.getPopularList()
+                .catchError({ error in
+                    print("Catch \(error)")
+                    return .just(MovieListModel.placeHolder)
+                })
+                
+        }
+        
+        return Output(nowPlayingList: nowPlayingList, popularList: popularList)
     }
 }

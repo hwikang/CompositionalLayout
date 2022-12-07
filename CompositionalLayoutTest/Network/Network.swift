@@ -20,6 +20,7 @@ class Network<T:Decodable> {
     
     func getItemList(_ path: String) -> Observable<T> {
         let absolutePath  = "\(endpoint)\(path)?api_key=\(APIKEY)&language=ko"
+        print("\(absolutePath)")
         return RxAlamofire.data(.get, absolutePath)
             .observeOn(queue)
             .debug()

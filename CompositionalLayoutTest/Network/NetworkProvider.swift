@@ -15,20 +15,24 @@ final class NetworkProvider {
     }
     
     func makeMovieNetwork() -> MovieNetwork {
-        let network = Network<NowPlayingModel>(endpoint)
+        let network = Network<MovieListModel>(endpoint)
         return MovieNetwork(network: network)
 
     }
 }
 
 final class MovieNetwork {
-    private let network: Network<NowPlayingModel>
-    init(network: Network<NowPlayingModel>){
+    private let network: Network<MovieListModel>
+    init(network: Network<MovieListModel>){
         self.network = network
     }
     
-    func getNowPlayingList() -> Observable<NowPlayingModel>{
+    func getNowPlayingList() -> Observable<MovieListModel>{
         return network.getItemList("now_playing")
+    }
+    
+    func getPopularList() -> Observable<MovieListModel> {
+        return network.getItemList("popular")
     }
 }
 
