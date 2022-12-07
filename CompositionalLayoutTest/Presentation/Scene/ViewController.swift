@@ -92,7 +92,7 @@ class ViewController: UIViewController {
 extension ViewController {
     
        private func configureCollectionView() {
-           collectionView.register(BannerCollectionViewCell.self, forCellWithReuseIdentifier: "BannerCell")
+           collectionView.register(NowPlayingCollectionViewCell.self, forCellWithReuseIdentifier: NowPlayingCollectionViewCell.id)
            collectionView.register(NormalCarouselCollectionViewCell.self, forCellWithReuseIdentifier: "NormalCarouselCell")
            collectionView.register(SquareCarouselCollectionViewCell.self, forCellWithReuseIdentifier: "SqaureCarouselCell")
            collectionView.register(SqaureCarouselHeaderView.self, forSupplementaryViewOfKind: "SqaureCarouselHeader", withReuseIdentifier: "SqaureCarouselHeader")
@@ -104,13 +104,13 @@ extension ViewController {
                
                switch sectionIndex {
                case 0:
-                   return self?.createBannerSection()
+                   return self?.createNowPlayingSection()
                case 1:
                    return self?.createNormalCarouselSection()
                case 2:
                    return self?.createSqaureCarouselSection()
                default:
-                   return self?.createBannerSection()
+                   return self?.createNowPlayingSection()
                }
                
            })
@@ -123,9 +123,9 @@ extension ViewController {
 //               print("item \(item)")
                switch item {
                case .banner(let data):
-                   guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BannerCell", for: indexPath) as? BannerCollectionViewCell else {fatalError()}
+                   guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NowPlayingCollectionViewCell.id, for: indexPath) as? NowPlayingCollectionViewCell else {fatalError()}
                    print("data \(data)")
-                   cell.configure(text: data.title, url: data.posterUrl)
+                   cell.configure(title: data.title, overview: data.overView, url: data.posterUrl)
 
 //                   if let text = data.text {
 //                       cell.configure(text: text, url: data.imageUrl)
@@ -187,11 +187,11 @@ extension ViewController {
            dataSource?.apply(snapshot)
        }
        
-       private func createBannerSection() -> NSCollectionLayoutSection {
+       private func createNowPlayingSection() -> NSCollectionLayoutSection {
            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
            let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-           let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(200))
+           let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(Layout.NowPlayingCellHeight))
 
            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
 
