@@ -19,6 +19,7 @@ class ViewModel {
     struct Output{
         let nowPlayingList: Observable<MovieListModel>
         let popularList: Observable<MovieListModel>
+        let upComingList: Observable<MovieListModel>
     }
     init() {
         
@@ -44,7 +45,14 @@ class ViewModel {
                 })
                 
         }
-        
-        return Output(nowPlayingList: nowPlayingList, popularList: popularList)
+        let upcomingList = input.trigger.flatMapLatest { _ -> Observable<MovieListModel> in
+            return self.network.getUpcomingList()
+                .catchError({ error in
+                    print("Catch \(error)")
+                    return .just(MovieListModel.placeHolder)
+                })
+                
+        }
+        return Output(nowPlayingList: nowPlayingList, popularList: popularList, upComingList: upcomingList)
     }
 }

@@ -64,7 +64,7 @@ class ViewController: UIViewController {
             .observeOn(MainScheduler.instance)
             .bind { [unowned self] list in
                 let itemList = list.results.map({ movie in
-                    return Item.banner(MovieItem(title: movie.title, overView: movie.overview, posterUrl: movie.poster_path, vote: "\(movie.vote_average)(\(movie.vote_count))"))
+                    return Item.banner(MovieItem(title: movie.title, overView: movie.overview, posterUrl: movie.poster_path, vote: "\(movie.vote_average)(\(movie.vote_count))",releaseDate: movie.release_date))
 
                 })
                 self.snapshot.appendItems(itemList, toSection: Section(id: "Banner"))
@@ -73,11 +73,10 @@ class ViewController: UIViewController {
             }.disposed(by: disposeBag)
         
         output.popularList
-            .delay(.milliseconds(1000), scheduler: MainScheduler.instance)
             .observeOn(MainScheduler.instance)
             .bind { [unowned self] list in
                 let itemList = list.results.map({ movie in
-                    return Item.normalCarousel(MovieItem(title: movie.title, overView: movie.overview, posterUrl: movie.poster_path, vote: "\(movie.vote_average)(\(movie.vote_count))"))
+                    return Item.normalCarousel(MovieItem(title: movie.title, overView: movie.overview, posterUrl: movie.poster_path, vote: "\(movie.vote_average)(\(movie.vote_count))",releaseDate: movie.release_date))
 
                 })
                 self.snapshot.appendItems(itemList, toSection: Section(id: "NormalCarousel"))
@@ -85,7 +84,19 @@ class ViewController: UIViewController {
             
             }.disposed(by: disposeBag)
         
+        output.upComingList
+            .observeOn(MainScheduler.instance)
+            .bind { [unowned self] list in
+                let itemList = list.results.map({ movie in
+                    return Item.listCarousel(MovieItem(title: movie.title, overView: movie.overview, posterUrl: movie.poster_path, vote: "\(movie.vote_average)(\(movie.vote_count))",releaseDate: movie.release_date))
+
+                })
+                self.snapshot.appendItems(itemList, toSection: Section(id: "ListCarousel"))
+                self.dataSource?.apply(self.snapshot)
+            
+            }.disposed(by: disposeBag)
         
+
     }
     
     private func bindView() {
@@ -104,10 +115,11 @@ extension ViewController {
        private func configureCollectionView() {
            collectionView.register(NowPlayingCollectionViewCell.self, forCellWithReuseIdentifier: NowPlayingCollectionViewCell.id)
            collectionView.register(NormalCarouselCollectionViewCell.self, forCellWithReuseIdentifier: NormalCarouselCollectionViewCell.id)
-           collectionView.register(SquareCarouselCollectionViewCell.self, forCellWithReuseIdentifier: "SqaureCarouselCell")
+           collectionView.register(ListCarouselCollectionViewCell.self, forCellWithReuseIdentifier: ListCarouselCollectionViewCell.id)
            collectionView.register(DefaultHeaderView.self, forSupplementaryViewOfKind: DefaultHeaderView.id, withReuseIdentifier: DefaultHeaderView.id)
            self.snapshot.appendSections([Section(id: "Banner")])
            self.snapshot.appendSections([Section(id: "NormalCarousel")])
+           self.snapshot.appendSections([Section(id: "ListCarousel")])
 
            setDataSource()
        }
@@ -120,15 +132,20 @@ extension ViewController {
                case 0:
                    return self?.createNowPlayingSection()
                case 1:
-                   let section =  self?.createNormalCarouselSection()
-                   let headerSize  = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(44))
+                   let section = self?.createNormalCarouselSection()
+                   let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(44))
                    let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: DefaultHeaderView.id, alignment: .topLeading)
 
                    section?.boundarySupplementaryItems = [header]
                    
                    return section
                case 2:
-                   return self?.createSqaureCarouselSection()
+                   let section = self?.createListCarouselSection()
+                   let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(44))
+                   let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: DefaultHeaderView.id, alignment: .topLeading)
+                   section?.boundarySupplementaryItems = [header]
+
+                   return section
                default:
                    return self?.createNowPlayingSection()
                }
@@ -150,8 +167,10 @@ extension ViewController {
                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NormalCarouselCollectionViewCell.id, for: indexPath) as? NormalCarouselCollectionViewCell else {fatalError()}
                    cell.configure(name: data.title, vote: data.vote, url: data.posterUrl)
                    return cell
-               case .squareCarousel(let data):
-                   guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SqaureCarouselCell", for: indexPath) as? SquareCarouselCollectionViewCell else {fatalError()}
+               case .listCarousel(let data):
+                   guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ListCarouselCollectionViewCell.id, for: indexPath) as? ListCarouselCollectionViewCell else {fatalError()}
+                   cell.configure(name: data.title, date: data.releaseDate, url: data.posterUrl)
+
                    return cell
               
                }
@@ -160,7 +179,14 @@ extension ViewController {
            dataSource?.supplementaryViewProvider = { (collectionView, kind, indexPath) -> UICollectionReusableView in
                
                guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: DefaultHeaderView.id, for: indexPath) as? DefaultHeaderView else { fatalError()}
-               header.configure(title: "인기 있는 영화", desc: "최근 가장 인기 있는 영화목록입니다.")
+               switch indexPath.section {
+               case 1:
+                   header.configure(title: "인기 있는 영화", desc: "최근 가장 인기 있는 영화목록입니다.")
+               case 2:
+                   header.configure(title: "개봉 예정 영화", desc: "개봉 예정인 영화목록입니다.")
+               default:
+                   print("Default Index Header")
+               }
                return header
            }
 
@@ -184,30 +210,27 @@ extension ViewController {
           
            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+
            item.contentInsets = NSDirectionalEdgeInsets(top: CellLayout.contentPadding, leading: CellLayout.contentPadding, bottom: CellLayout.contentPadding, trailing: CellLayout.contentPadding)
 
            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.6), heightDimension: .estimated(Layout.NormalCarouselCellHeight))
-
            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+
            let section = NSCollectionLayoutSection(group: group)
            section.orthogonalScrollingBehavior = .continuous
            return section
        }
        
-       private func createSqaureCarouselSection() -> NSCollectionLayoutSection {
-           let headerSize  = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(44))
-           let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "SqaureCarouselHeader", alignment: .topLeading)
-           let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1.0))
+       private func createListCarouselSection() -> NSCollectionLayoutSection {
+           let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(0.3))
            let item = NSCollectionLayoutItem(layoutSize: itemSize)
-           item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 15)
+           item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: CellLayout.contentPadding, bottom: Layout.defaultItemMargin, trailing: CellLayout.contentPadding)
 
-           let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.65), heightDimension: .estimated(200))
+           let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(Layout.ListCarouselCellHeight))
 
-           let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+          let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitem: item, count: 3)
 
            let section = NSCollectionLayoutSection(group: group)
-           section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 20)
-           section.boundarySupplementaryItems = [header]
            section.orthogonalScrollingBehavior = .continuous
            return section
 
