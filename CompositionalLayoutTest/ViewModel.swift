@@ -26,8 +26,11 @@ class ViewModel {
     
     func transform(input: Input) -> Output {
         let list = input.trigger.flatMapLatest { _ -> Observable<NowPlayingModel> in
-            print("")
             return self.network.getNowPlayingList()
+                .catchError({ error in
+                    print("Catch")
+                    return .just(NowPlayingModel.placeHolder)
+                })
                 
         }
         

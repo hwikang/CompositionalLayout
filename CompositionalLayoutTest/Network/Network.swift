@@ -22,6 +22,7 @@ class Network<T:Decodable> {
         let absolutePath  = "\(endpoint)\(path)?api_key=\(APIKEY)&language=ko"
         return RxAlamofire.data(.get, absolutePath)
             .observeOn(queue)
+            .debug()
             .map { data -> T in
                 return try JSONDecoder().decode(T.self, from: data)
             }

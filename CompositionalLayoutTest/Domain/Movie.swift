@@ -11,6 +11,10 @@ import Foundation
 struct NowPlayingModel: Codable {
     let page: Int
     let results: [Movie]
+    
+    static var placeHolder: NowPlayingModel {
+        return NowPlayingModel(page: 0, results: [])
+    }
 }
 
 

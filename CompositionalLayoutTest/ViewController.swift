@@ -12,6 +12,12 @@ import RxSwift
 class ViewController: UIViewController {
 
   
+    let retryButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Retry", for: .normal)
+        button.backgroundColor = .red
+        return button
+    }()
     lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
         return collectionView
@@ -24,15 +30,19 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         setUI()
         bindViewModel()
-
+        bindView()
         trigger.onNext(true)
 
     }
     
     private func setUI(){
         self.view.addSubview(collectionView)
+        self.view.addSubview(retryButton)
         collectionView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+        }
+        retryButton.snp.makeConstraints { make in
+            make.bottom.right.equalToSuperview()
         }
         configureCollectionView()
     }
@@ -66,6 +76,12 @@ class ViewController: UIViewController {
             self?.dataSource?.apply(snapshot)
         }.disposed(by: disposeBag)
         
+    }
+    
+    private func bindView() {
+        retryButton.rx.tap.bind{ [weak self] in
+            self?.trigger.onNext(true)
+        }.disposed(by: disposeBag)
     }
  
 
