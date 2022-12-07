@@ -10,4 +10,5 @@ import UIKit
 enum Layout {
     static let NowPlayingCellHeight: CGFloat = 640
     static let NormalCarouselCellHeight: CGFloat = 220
+    static let sectionMargin: CGFloat = 40
 }

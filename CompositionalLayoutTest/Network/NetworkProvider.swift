@@ -34,5 +34,9 @@ final class MovieNetwork {
     func getPopularList() -> Observable<MovieListModel> {
         return network.getItemList("popular")
     }
+    
+    func getUpcomingList() -> Observable<MovieListModel> {
+        return network.getItemList("upcoming")
+    }
 }
 

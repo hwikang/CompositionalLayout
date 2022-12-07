@@ -7,46 +7,6 @@
 
 import UIKit
 
-class SqaureCarouselHeaderView: UICollectionReusableView {
-    
-    let titleLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 20,weight: .bold)
-        return label
-    }()
-    let descLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14,weight: .light)
-        return label
-    }()
-    
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.addSubview(titleLabel)
-        self.addSubview(descLabel)
-
-        titleLabel.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview()
-        }
-        descLabel.snp.makeConstraints { make in
-            make.bottom.leading.equalToSuperview()
-        }
-    }
-    
-    public func configure(title:String,desc:String){
-        titleLabel.text = title
-        descLabel.text = desc
-      }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    
-  
-}
-
 
 class SquareCarouselCollectionViewCell: UICollectionViewCell {
     

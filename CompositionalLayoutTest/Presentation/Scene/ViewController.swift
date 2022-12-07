@@ -105,7 +105,7 @@ extension ViewController {
            collectionView.register(NowPlayingCollectionViewCell.self, forCellWithReuseIdentifier: NowPlayingCollectionViewCell.id)
            collectionView.register(NormalCarouselCollectionViewCell.self, forCellWithReuseIdentifier: NormalCarouselCollectionViewCell.id)
            collectionView.register(SquareCarouselCollectionViewCell.self, forCellWithReuseIdentifier: "SqaureCarouselCell")
-           collectionView.register(SqaureCarouselHeaderView.self, forSupplementaryViewOfKind: "SqaureCarouselHeader", withReuseIdentifier: "SqaureCarouselHeader")
+           collectionView.register(DefaultHeaderView.self, forSupplementaryViewOfKind: DefaultHeaderView.id, withReuseIdentifier: DefaultHeaderView.id)
            self.snapshot.appendSections([Section(id: "Banner")])
            self.snapshot.appendSections([Section(id: "NormalCarousel")])
 
@@ -113,19 +113,27 @@ extension ViewController {
        }
        
        private func createLayout() -> UICollectionViewCompositionalLayout{
+           let config = UICollectionViewCompositionalLayoutConfiguration()
+           config.interSectionSpacing = Layout.sectionMargin
            return UICollectionViewCompositionalLayout(sectionProvider: {[weak self] sectionIndex, environment in
                switch sectionIndex {
                case 0:
                    return self?.createNowPlayingSection()
                case 1:
-                   return self?.createNormalCarouselSection()
+                   let section =  self?.createNormalCarouselSection()
+                   let headerSize  = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(44))
+                   let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: DefaultHeaderView.id, alignment: .topLeading)
+
+                   section?.boundarySupplementaryItems = [header]
+                   
+                   return section
                case 2:
                    return self?.createSqaureCarouselSection()
                default:
                    return self?.createNowPlayingSection()
                }
                
-           })
+           },configuration: config)
        }
        
        
@@ -150,9 +158,9 @@ extension ViewController {
            }
            
            dataSource?.supplementaryViewProvider = { (collectionView, kind, indexPath) -> UICollectionReusableView in
-               guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "SqaureCarouselHeader", for: indexPath) as? SqaureCarouselHeaderView else { fatalError()}
-               print("Section \(indexPath)")
-               header.configure(title: "이츠 오리지널", desc: "쿠팡이츠에서 먼저 맛볼 수 있는 맛집입니다")
+               
+               guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: DefaultHeaderView.id, for: indexPath) as? DefaultHeaderView else { fatalError()}
+               header.configure(title: "인기 있는 영화", desc: "최근 가장 인기 있는 영화목록입니다.")
                return header
            }
 
@@ -173,9 +181,10 @@ extension ViewController {
        }
        
        private func createNormalCarouselSection() -> NSCollectionLayoutSection {
+          
            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
            let item = NSCollectionLayoutItem(layoutSize: itemSize)
-           item.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 25, bottom: 15, trailing: 0)
+           item.contentInsets = NSDirectionalEdgeInsets(top: CellLayout.contentPadding, leading: CellLayout.contentPadding, bottom: CellLayout.contentPadding, trailing: CellLayout.contentPadding)
 
            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.6), heightDimension: .estimated(Layout.NormalCarouselCellHeight))
 
