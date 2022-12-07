@@ -21,8 +21,6 @@
 		BFBEA60029307AE3001DEB4A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFBEA5FF29307AE3001DEB4A /* Assets.xcassets */; };
 		BFBEA60329307AE3001DEB4A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFBEA60129307AE3001DEB4A /* LaunchScreen.storyboard */; };
 		BFBEA60E29307AE3001DEB4A /* CompositionalLayoutTestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBEA60D29307AE3001DEB4A /* CompositionalLayoutTestTests.swift */; };
-		BFBEA61829307AE3001DEB4A /* CompositionalLayoutTestUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBEA61729307AE3001DEB4A /* CompositionalLayoutTestUITests.swift */; };
-		BFBEA61A29307AE3001DEB4A /* CompositionalLayoutTestUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBEA61929307AE3001DEB4A /* CompositionalLayoutTestUITestsLaunchTests.swift */; };
 		BFBEA62729307B14001DEB4A /* NowPlayingCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBEA62629307B14001DEB4A /* NowPlayingCollectionViewCell.swift */; };
 		BFBEA62A29307B77001DEB4A /* NormalCarouselCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBEA62929307B77001DEB4A /* NormalCarouselCollectionViewCell.swift */; };
 		BFC1917229332B9C0097CCAB /* SquareCarouselCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC1917129332B9C0097CCAB /* SquareCarouselCollectionViewCell.swift */; };
@@ -73,8 +71,6 @@
 		BFBEA60929307AE3001DEB4A /* CompositionalLayoutTestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CompositionalLayoutTestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFBEA60D29307AE3001DEB4A /* CompositionalLayoutTestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionalLayoutTestTests.swift; sourceTree = "<group>"; };
 		BFBEA61329307AE3001DEB4A /* CompositionalLayoutTestUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CompositionalLayoutTestUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		BFBEA61729307AE3001DEB4A /* CompositionalLayoutTestUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionalLayoutTestUITests.swift; sourceTree = "<group>"; };
-		BFBEA61929307AE3001DEB4A /* CompositionalLayoutTestUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionalLayoutTestUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		BFBEA62629307B14001DEB4A /* NowPlayingCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingCollectionViewCell.swift; sourceTree = "<group>"; };
 		BFBEA62929307B77001DEB4A /* NormalCarouselCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NormalCarouselCollectionViewCell.swift; sourceTree = "<group>"; };
 		BFC1917129332B9C0097CCAB /* SquareCarouselCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareCarouselCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -171,7 +167,6 @@
 			children = (
 				BFBEA5F529307AE1001DEB4A /* CompositionalLayoutTest */,
 				BFBEA60C29307AE3001DEB4A /* CompositionalLayoutTestTests */,
-				BFBEA61629307AE3001DEB4A /* CompositionalLayoutTestUITests */,
 				BFBEA5F429307AE1001DEB4A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -210,15 +205,6 @@
 				BFBEA60D29307AE3001DEB4A /* CompositionalLayoutTestTests.swift */,
 			);
 			path = CompositionalLayoutTestTests;
-			sourceTree = "<group>";
-		};
-		BFBEA61629307AE3001DEB4A /* CompositionalLayoutTestUITests */ = {
-			isa = PBXGroup;
-			children = (
-				BFBEA61729307AE3001DEB4A /* CompositionalLayoutTestUITests.swift */,
-				BFBEA61929307AE3001DEB4A /* CompositionalLayoutTestUITestsLaunchTests.swift */,
-			);
-			path = CompositionalLayoutTestUITests;
 			sourceTree = "<group>";
 		};
 		BFBEA62829307B19001DEB4A /* Cell */ = {
@@ -436,8 +422,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BFBEA61A29307AE3001DEB4A /* CompositionalLayoutTestUITestsLaunchTests.swift in Sources */,
-				BFBEA61829307AE3001DEB4A /* CompositionalLayoutTestUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
