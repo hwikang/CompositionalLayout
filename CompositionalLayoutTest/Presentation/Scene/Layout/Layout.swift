@@ -8,5 +8,5 @@
 import UIKit
 
 enum Layout {
-    static let NowPlayingCellHeight: CGFloat = 600
+    static let NowPlayingCellHeight: CGFloat = 640
 }

@@ -65,7 +65,8 @@ class ViewController: UIViewController {
             snapshot.appendSections([Section(id: "Banner")])
 
             if let itemList = movieList?.map({ movie in
-                return Item.banner(MovieItem(title: movie.title, overView: movie.overview, posterUrl: movie.poster_path))
+                
+                return Item.banner(MovieItem(title: movie.title, overView: movie.overview, posterUrl: movie.poster_path, vote: "\(movie.vote_average)(\(movie.vote_count))"))
 
             }) {
                 print("itemList \(itemList)")
@@ -125,7 +126,7 @@ extension ViewController {
                case .banner(let data):
                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NowPlayingCollectionViewCell.id, for: indexPath) as? NowPlayingCollectionViewCell else {fatalError()}
                    print("data \(data)")
-                   cell.configure(title: data.title, overview: data.overView, url: data.posterUrl)
+                   cell.configure(title: data.title, overview: data.overView,vote: data.vote, url: data.posterUrl)
 
 //                   if let text = data.text {
 //                       cell.configure(text: text, url: data.imageUrl)

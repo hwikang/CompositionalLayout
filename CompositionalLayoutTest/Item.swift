@@ -29,6 +29,7 @@ struct MovieItem: Hashable {
     let title: String
     let overView: String
     let posterUrl: String
+    let vote: String
 }
 
 struct RestaurantItem: Hashable {

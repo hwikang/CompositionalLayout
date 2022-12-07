@@ -22,5 +22,7 @@ struct Movie: Codable{
     let title: String
     let overview: String
     let poster_path: String
+    let vote_average: Float
+    let vote_count: Int
 
 }
