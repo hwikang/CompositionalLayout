@@ -15,19 +15,19 @@ struct Section: Hashable {
 
 enum Item: Hashable {
     case banner(HomeItem)
-    case normalCarousel(HomeItem)
     case squareCarousel(RestaurantItem)
+    case listCarousel(HomeItem)
 }
 
 struct HomeItem: Hashable {
-    var text: String? = ""
-    var name: String? = ""
+    var title: String
+    var subTitle: String? = ""
     let imageUrl: String
 }
 
 
 struct RestaurantItem: Hashable {
-    let name: String
+    let title: String
     let reviewPoint: Float
     let reviewCount: Int
     let imageUrl: String
