@@ -29,6 +29,7 @@
 		BFC1917A293344E20097CCAB /* NetworkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC19179293344E20097CCAB /* NetworkProvider.swift */; };
 		BFC1917D293345590097CCAB /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC1917C293345590097CCAB /* Movie.swift */; };
 		BFC1917F293476060097CCAB /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC1917E293476060097CCAB /* ViewModel.swift */; };
+		BFD208F529821C510090AB9C /* MovieResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD208F429821C510090AB9C /* MovieResult.swift */; };
 		BFFC960C2930826F00147B30 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFC960B2930826F00147B30 /* Item.swift */; };
 		BFFC960F2930A03D00147B30 /* Const.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFC960E2930A03D00147B30 /* Const.swift */; };
 		BFFC96122930A5CF00147B30 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = BFFC96112930A5CF00147B30 /* SnapKit */; };
@@ -78,6 +79,7 @@
 		BFC19179293344E20097CCAB /* NetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkProvider.swift; sourceTree = "<group>"; };
 		BFC1917C293345590097CCAB /* Movie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
 		BFC1917E293476060097CCAB /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
+		BFD208F429821C510090AB9C /* MovieResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieResult.swift; sourceTree = "<group>"; };
 		BFFC960B2930826F00147B30 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		BFFC960E2930A03D00147B30 /* Const.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Const.swift; sourceTree = "<group>"; };
 		BFFC96142930AA9000147B30 /* UIImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageView.swift; sourceTree = "<group>"; };
@@ -225,6 +227,7 @@
 			children = (
 				BFC1917C293345590097CCAB /* Movie.swift */,
 				BFAF3B07294067B4001CE10B /* MovieListModel.swift */,
+				BFD208F429821C510090AB9C /* MovieResult.swift */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -394,6 +397,7 @@
 				BFAF3AF929404D88001CE10B /* NetworkError.swift in Sources */,
 				BFAF3AFC29404EC2001CE10B /* ImageCacheManager.swift in Sources */,
 				BFFC96152930AA9000147B30 /* UIImageView.swift in Sources */,
+				BFD208F529821C510090AB9C /* MovieResult.swift in Sources */,
 				BFC1917D293345590097CCAB /* Movie.swift in Sources */,
 				BFBEA5FB29307AE1001DEB4A /* ViewController.swift in Sources */,
 				BFBEA62729307B14001DEB4A /* NowPlayingCollectionViewCell.swift in Sources */,

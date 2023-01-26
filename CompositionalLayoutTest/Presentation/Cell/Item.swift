@@ -7,22 +7,15 @@
 
 import Foundation
 
-let placeHolderUrl = "https://edukoreas.com/wp-content/uploads/2022/01/placeholder-2.png"
-
-struct Section: Hashable {
-    let id: String
+enum Section: Hashable {
+    case banner
+    case horizontal(String)
+    case list(String)
+    case double(String)
 }
 
 enum Item: Hashable {
-    case banner(MovieItem)
-    case normalCarousel(MovieItem)
-    case listCarousel(MovieItem)
-}
-
-struct MovieItem: Hashable {
-    let title: String
-    let overView: String
-    let posterUrl: String
-    let vote: String
-    let releaseDate: String
+    case bigImage(Movie)
+    case normal(Movie)
+    case list(Movie)
 }

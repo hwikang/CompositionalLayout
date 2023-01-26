@@ -63,6 +63,7 @@ class NowPlayingCollectionViewCell: UICollectionViewCell {
         self.title.text = title
         overviewLabel.text = overview
         voteLabel.text = vote
+        print("url \(url)")
         posterImage.load(url: url)
     }
 

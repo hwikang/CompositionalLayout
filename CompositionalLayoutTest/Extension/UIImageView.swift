@@ -15,9 +15,7 @@ extension UIImageView {
         }
         
         DispatchQueue.global().async { [weak self] in
-        let path = "https://image.tmdb.org/t/p/w500\(url)"
-
-            if let url = URL(string: path),
+            if let url = URL(string: url),
                let data = try? Data(contentsOf: url) {
                 if let image = UIImage(data: data) {
                     ImageCacheManager.shared.setObject(image, forKey: nsString)

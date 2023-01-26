@@ -50,52 +50,32 @@ class ViewController: UIViewController {
     }
     
     private func bindViewModel() {
-//        let viewWillAppear = rx.sentMessage(#selector(UIViewController.viewWillAppear(_:)))
-//            .map{_ in Void()}
-
-//        let pull = collectionView.refreshControl?.rx
-//            .controlEvent(.valueChanged)
-//            .flatMapLatest{ Observable<Void>.of()}
         
         let input = ViewModel.Input(trigger: trigger.asObservable())
         let output = viewModel.transform(input: input)
         
-        output.nowPlayingList
+        output.combinedList
             .observeOn(MainScheduler.instance)
-            .bind { [unowned self] list in
-                let itemList = list.results.map({ movie in
-                    return Item.banner(MovieItem(title: movie.title, overView: movie.overview, posterUrl: movie.poster_path, vote: "\(movie.vote_average)(\(movie.vote_count))",releaseDate: movie.release_date))
+            .bind {[unowned self] result in
+                let bannerItems = result.nowPlaying.results.map {Item.bigImage($0) }
+                self.snapshot.appendSections([Section.banner])
+                self.snapshot.appendItems(bannerItems, toSection: Section.banner)
 
-                })
-                self.snapshot.appendItems(itemList, toSection: Section(id: "Banner"))
-                self.dataSource?.apply(self.snapshot)
-            
-            }.disposed(by: disposeBag)
-        
-        output.popularList
-            .observeOn(MainScheduler.instance)
-            .bind { [unowned self] list in
-                let itemList = list.results.map({ movie in
-                    return Item.normalCarousel(MovieItem(title: movie.title, overView: movie.overview, posterUrl: movie.poster_path, vote: "\(movie.vote_average)(\(movie.vote_count))",releaseDate: movie.release_date))
+                let normalItems = result.popular.results.map {Item.normal($0) }
+                let popularSetion = Section.horizontal("List of the current popular movies on TMDB. This list updates daily.")
+                self.snapshot.appendSections([popularSetion])
+                self.snapshot.appendItems(normalItems, toSection: popularSetion)
 
-                })
-                self.snapshot.appendItems(itemList, toSection: Section(id: "NormalCarousel"))
-                self.dataSource?.apply(self.snapshot)
-            
-            }.disposed(by: disposeBag)
-        
-        output.upComingList
-            .observeOn(MainScheduler.instance)
-            .bind { [unowned self] list in
-                let itemList = list.results.map({ movie in
-                    return Item.listCarousel(MovieItem(title: movie.title, overView: movie.overview, posterUrl: movie.poster_path, vote: "\(movie.vote_average)(\(movie.vote_count))",releaseDate: movie.release_date))
+                
+                let upcomingSection = Section.list("List of upcoming movies in theatres")
+                let listItems = result.upcoming.results.map { Item.list($0) }
+                self.snapshot.appendSections([upcomingSection])
+                self.snapshot.appendItems(listItems, toSection: upcomingSection)
 
-                })
-                self.snapshot.appendItems(itemList, toSection: Section(id: "ListCarousel"))
                 self.dataSource?.apply(self.snapshot)
-            
+
+                
             }.disposed(by: disposeBag)
-        
 
     }
     
@@ -117,9 +97,6 @@ extension ViewController {
            collectionView.register(NormalCarouselCollectionViewCell.self, forCellWithReuseIdentifier: NormalCarouselCollectionViewCell.id)
            collectionView.register(ListCarouselCollectionViewCell.self, forCellWithReuseIdentifier: ListCarouselCollectionViewCell.id)
            collectionView.register(DefaultHeaderView.self, forSupplementaryViewOfKind: DefaultHeaderView.id, withReuseIdentifier: DefaultHeaderView.id)
-           self.snapshot.appendSections([Section(id: "Banner")])
-           self.snapshot.appendSections([Section(id: "NormalCarousel")])
-           self.snapshot.appendSections([Section(id: "ListCarousel")])
 
            setDataSource()
        }
@@ -128,10 +105,13 @@ extension ViewController {
            let config = UICollectionViewCompositionalLayoutConfiguration()
            config.interSectionSpacing = Layout.sectionMargin
            return UICollectionViewCompositionalLayout(sectionProvider: {[weak self] sectionIndex, environment in
-               switch sectionIndex {
-               case 0:
+               let section = self?.dataSource?.sectionIdentifier(for: sectionIndex)
+              
+               switch section {
+               case .banner:
                    return self?.createNowPlayingSection()
-               case 1:
+            
+               case .horizontal(_):
                    let section = self?.createNormalCarouselSection()
                    let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(44))
                    let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: DefaultHeaderView.id, alignment: .topLeading)
@@ -139,15 +119,17 @@ extension ViewController {
                    section?.boundarySupplementaryItems = [header]
                    
                    return section
-               case 2:
+               case .list(_):
                    let section = self?.createListCarouselSection()
                    let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(44))
                    let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: DefaultHeaderView.id, alignment: .topLeading)
-                   section?.boundarySupplementaryItems = [header]
 
+                   section?.boundarySupplementaryItems = [header]
+                   
                    return section
                default:
                    return self?.createNowPlayingSection()
+
                }
                
            },configuration: config)
@@ -159,15 +141,15 @@ extension ViewController {
            dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { (collectionView, indexPath, item ) -> UICollectionViewCell? in
 //               print("item \(item)")
                switch item {
-               case .banner(let data):
+               case .bigImage(let data):
                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NowPlayingCollectionViewCell.id, for: indexPath) as? NowPlayingCollectionViewCell else {fatalError()}
-                   cell.configure(title: data.title, overview: data.overView,vote: data.vote, url: data.posterUrl)
+                   cell.configure(title: data.title, overview: data.overview,vote: data.vote, url: data.posterUrl)
                    return cell
-               case .normalCarousel(let data):
+               case .normal(let data):
                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NormalCarouselCollectionViewCell.id, for: indexPath) as? NormalCarouselCollectionViewCell else {fatalError()}
                    cell.configure(name: data.title, vote: data.vote, url: data.posterUrl)
                    return cell
-               case .listCarousel(let data):
+               case .list(let data):
                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ListCarouselCollectionViewCell.id, for: indexPath) as? ListCarouselCollectionViewCell else {fatalError()}
                    cell.configure(name: data.title, date: data.releaseDate, url: data.posterUrl)
 
@@ -176,14 +158,14 @@ extension ViewController {
                }
            }
            
-           dataSource?.supplementaryViewProvider = { (collectionView, kind, indexPath) -> UICollectionReusableView in
+           dataSource?.supplementaryViewProvider = {[unowned self] (collectionView, kind, indexPath) -> UICollectionReusableView in
                
                guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: DefaultHeaderView.id, for: indexPath) as? DefaultHeaderView else { fatalError()}
-               switch indexPath.section {
-               case 1:
-                   header.configure(title: "인기 있는 영화", desc: "최근 가장 인기 있는 영화목록입니다.")
-               case 2:
-                   header.configure(title: "개봉 예정 영화", desc: "개봉 예정인 영화목록입니다.")
+               let section = self.dataSource?.sectionIdentifier(for: indexPath.section)
+               switch section {
+               case .horizontal(let title), .list(let title):
+                   header.configure(title: title)
+
                default:
                    print("Default Index Header")
                }

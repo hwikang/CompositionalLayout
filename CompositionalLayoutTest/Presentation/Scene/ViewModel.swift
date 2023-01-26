@@ -17,9 +17,7 @@ class ViewModel {
     }
     
     struct Output{
-        let nowPlayingList: Observable<MovieListModel>
-        let popularList: Observable<MovieListModel>
-        let upComingList: Observable<MovieListModel>
+        let combinedList: Observable<MovieResult>
     }
     init() {
         
@@ -27,32 +25,13 @@ class ViewModel {
     }
     
     func transform(input: Input) -> Output {
-        let nowPlayingList = input.trigger.flatMapLatest { _ -> Observable<MovieListModel> in
-            return self.network.getNowPlayingList()
-
-                .catchError({ error in
-                    print("Catch \(error)")
-                    return .just(MovieListModel.placeHolder)
-                })
+        let combined = input.trigger.flatMapLatest { _ -> Observable<MovieResult> in
+            return Observable.combineLatest(self.network.getUpcomingList(), self.network.getPopularList(), self.network.getNowPlayingList()) { upcoming,popular,nowplaying -> MovieResult in
+                return MovieResult(upcoming: upcoming, popular: popular, nowPlaying: nowplaying)
                 
+            }
         }
         
-        let popularList = input.trigger.flatMapLatest { _ -> Observable<MovieListModel> in
-            return self.network.getPopularList()
-                .catchError({ error in
-                    print("Catch \(error)")
-                    return .just(MovieListModel.placeHolder)
-                })
-                
-        }
-        let upcomingList = input.trigger.flatMapLatest { _ -> Observable<MovieListModel> in
-            return self.network.getUpcomingList()
-                .catchError({ error in
-                    print("Catch \(error)")
-                    return .just(MovieListModel.placeHolder)
-                })
-                
-        }
-        return Output(nowPlayingList: nowPlayingList, popularList: popularList, upComingList: upcomingList)
+        return Output(combinedList:combined)
     }
 }

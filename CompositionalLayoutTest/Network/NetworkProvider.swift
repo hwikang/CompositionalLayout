@@ -39,4 +39,3 @@ final class MovieNetwork {
         return network.getItemList("upcoming")
     }
 }
-
