@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import Kingfisher
 
 
 class NowPlayingCollectionViewCell: UICollectionViewCell {
@@ -62,9 +62,8 @@ class NowPlayingCollectionViewCell: UICollectionViewCell {
     public func configure(title:String, overview: String, vote:String, url:String){
         self.title.text = title
         overviewLabel.text = overview
-        voteLabel.text = vote
-        print("url \(url)")
-        posterImage.load(url: url)
+        voteLabel.text = vote        
+        posterImage.kf.setImage(with: URL(string: url))
     }
 
     required init?(coder: NSCoder) {

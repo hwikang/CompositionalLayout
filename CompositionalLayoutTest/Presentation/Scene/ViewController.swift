@@ -109,26 +109,26 @@ extension ViewController {
               
                switch section {
                case .banner:
-                   return self?.createNowPlayingSection()
+                   return CollectionViewSection.createNowPlayingSection()
             
                case .horizontal(_):
-                   let section = self?.createNormalCarouselSection()
+                   let section = CollectionViewSection.createNormalCarouselSection()
                    let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(44))
                    let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: DefaultHeaderView.id, alignment: .topLeading)
 
-                   section?.boundarySupplementaryItems = [header]
+                   section.boundarySupplementaryItems = [header]
                    
                    return section
                case .list(_):
-                   let section = self?.createListCarouselSection()
+                   let section = CollectionViewSection.createListCarouselSection()
                    let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(44))
                    let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: DefaultHeaderView.id, alignment: .topLeading)
 
-                   section?.boundarySupplementaryItems = [header]
+                   section.boundarySupplementaryItems = [header]
                    
                    return section
                default:
-                   return self?.createNowPlayingSection()
+                   return CollectionViewSection.createNowPlayingSection()
 
                }
                
@@ -175,46 +175,5 @@ extension ViewController {
 
        }
        
-       private func createNowPlayingSection() -> NSCollectionLayoutSection {
-           let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
-           let item = NSCollectionLayoutItem(layoutSize: itemSize)
-
-           let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(Layout.NowPlayingCellHeight))
-
-           let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-
-           let section = NSCollectionLayoutSection(group: group)
-           section.orthogonalScrollingBehavior = .groupPaging
-           return section
-       }
-       
-       private func createNormalCarouselSection() -> NSCollectionLayoutSection {
-          
-           let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
-           let item = NSCollectionLayoutItem(layoutSize: itemSize)
-
-           item.contentInsets = NSDirectionalEdgeInsets(top: CellLayout.contentPadding, leading: CellLayout.contentPadding, bottom: CellLayout.contentPadding, trailing: CellLayout.contentPadding)
-
-           let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.6), heightDimension: .estimated(Layout.NormalCarouselCellHeight))
-           let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-
-           let section = NSCollectionLayoutSection(group: group)
-           section.orthogonalScrollingBehavior = .continuous
-           return section
-       }
-       
-       private func createListCarouselSection() -> NSCollectionLayoutSection {
-           let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(0.3))
-           let item = NSCollectionLayoutItem(layoutSize: itemSize)
-           item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: CellLayout.contentPadding, bottom: Layout.defaultItemMargin, trailing: CellLayout.contentPadding)
-
-           let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(Layout.ListCarouselCellHeight))
-
-          let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitem: item, count: 3)
-
-           let section = NSCollectionLayoutSection(group: group)
-           section.orthogonalScrollingBehavior = .continuous
-           return section
-
-       }
+     
 }

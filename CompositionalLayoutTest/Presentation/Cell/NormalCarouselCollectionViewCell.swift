@@ -44,7 +44,8 @@ class NormalCarouselCollectionViewCell: UICollectionViewCell {
     public func configure(name:String, vote: String, url:String){
         label.text = name
         voteLabel.text = vote
-        image.load(url: url)
+        
+        image.kf.setImage(with: URL(string: url))
     
     } 
 
