@@ -10,28 +10,38 @@ import RxSwift
 import RxCocoa
 
 class ViewModel {
-    private let network: MovieNetwork
-    
+    private let movieNetwork: MovieNetwork
+    private let tvNetwork: TVNetwork
     struct Input {
-        let trigger: Observable<Bool>
+        let tvTrigger: Observable<Void>
+        let movieTrigger: Observable<Void>
     }
     
     struct Output{
-        let combinedList: Observable<MovieResult>
+        let tvList: Observable<[TV]>
+        let movieList: Observable<MovieResult>
     }
     init() {
-        
-        self.network = NetworkProvider().makeMovieNetwork()
+        let provider = NetworkProvider()
+        self.movieNetwork = provider.makeMovieNetwork()
+        self.tvNetwork = provider.makeTVNetwork()
     }
     
     func transform(input: Input) -> Output {
-        let combined = input.trigger.flatMapLatest { _ -> Observable<MovieResult> in
-            return Observable.combineLatest(self.network.getUpcomingList(), self.network.getPopularList(), self.network.getNowPlayingList()) { upcoming,popular,nowplaying -> MovieResult in
+        
+        let tvList = input.tvTrigger.flatMapLatest { _ -> Observable<[TV]> in
+            return self.tvNetwork.getTopRatedList().map { model in
+                return model.results
+            }
+        }
+        
+        let movieList = input.movieTrigger.flatMapLatest { _ -> Observable<MovieResult> in
+            return Observable.combineLatest(self.movieNetwork.getUpcomingList(), self.movieNetwork.getPopularList(), self.movieNetwork.getNowPlayingList()) { upcoming,popular,nowplaying -> MovieResult in
                 return MovieResult(upcoming: upcoming, popular: popular, nowPlaying: nowplaying)
                 
             }
         }
         
-        return Output(combinedList:combined)
+        return Output(tvList:tvList, movieList:movieList)
     }
 }

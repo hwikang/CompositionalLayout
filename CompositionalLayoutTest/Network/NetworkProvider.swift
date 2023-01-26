@@ -11,13 +11,17 @@ import RxSwift
 final class NetworkProvider {
     private let endpoint: String
     init() {
-        self.endpoint = "https://api.themoviedb.org/3/movie/"
+        self.endpoint = "https://api.themoviedb.org/3/"
     }
     
     func makeMovieNetwork() -> MovieNetwork {
         let network = Network<MovieListModel>(endpoint)
         return MovieNetwork(network: network)
-
+    }
+    
+    func makeTVNetwork() -> TVNetwork {
+        let network = Network<TVListModel>(endpoint)
+        return TVNetwork(network: network)
     }
 }
 
@@ -28,14 +32,27 @@ final class MovieNetwork {
     }
     
     func getNowPlayingList() -> Observable<MovieListModel>{
-        return network.getItemList("now_playing")
+        return network.getItemList("movie/now_playing")
     }
     
     func getPopularList() -> Observable<MovieListModel> {
-        return network.getItemList("popular")
+        return network.getItemList("movie/popular")
     }
     
     func getUpcomingList() -> Observable<MovieListModel> {
-        return network.getItemList("upcoming")
+        return network.getItemList("movie/upcoming")
     }
+}
+
+final class TVNetwork {
+    private let network: Network<TVListModel>
+    init(network: Network<TVListModel>){
+        self.network = network
+    }
+    
+    func getTopRatedList() -> Observable<TVListModel> {
+        return network.getItemList("tv/top_rated")
+    }
+    
+    
 }

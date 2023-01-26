@@ -12,76 +12,82 @@ import RxSwift
 class ViewController: UIViewController {
 
   
-    let retryButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Retry", for: .normal)
-        button.backgroundColor = .red
-        return button
-    }()
+    let buttonView = ButtonView()
     lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout())
         return collectionView
     }()
     private var dataSource: UICollectionViewDiffableDataSource<Section, Item>?
-    private var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
 
     private let viewModel: ViewModel = ViewModel()
     private let disposeBag = DisposeBag()
-    private let trigger = PublishSubject<Bool>()
+    private let tvTrigger = PublishSubject<Void>()
+    private let movieTrigger = PublishSubject<Void>()
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
         bindViewModel()
         bindView()
-        trigger.onNext(true)
-
+        movieTrigger.onNext(())
     }
     
     private func setUI(){
         self.view.addSubview(collectionView)
-        self.view.addSubview(retryButton)
-        collectionView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+        self.view.addSubview(buttonView)
+        
+        buttonView.snp.makeConstraints { make in
+            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(50)
         }
-        retryButton.snp.makeConstraints { make in
-            make.bottom.right.equalToSuperview()
+        collectionView.snp.makeConstraints { make in
+            make.top.equalTo(buttonView.snp.bottom).offset(0)
+            make.leading.trailing.bottom.equalToSuperview()
         }
         configureCollectionView()
     }
     
     private func bindViewModel() {
+        let input = ViewModel.Input(tvTrigger: tvTrigger.asObservable(), movieTrigger: movieTrigger.asObservable())
         
-        let input = ViewModel.Input(trigger: trigger.asObservable())
         let output = viewModel.transform(input: input)
         
-        output.combinedList
+        output.movieList
             .observeOn(MainScheduler.instance)
             .bind {[unowned self] result in
+                var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+
                 let bannerItems = result.nowPlaying.results.map {Item.bigImage($0) }
-                self.snapshot.appendSections([Section.banner])
-                self.snapshot.appendItems(bannerItems, toSection: Section.banner)
+                snapshot.appendSections([Section.banner])
+                snapshot.appendItems(bannerItems, toSection: Section.banner)
 
                 let normalItems = result.popular.results.map {Item.normal($0) }
                 let popularSetion = Section.horizontal("List of the current popular movies on TMDB. This list updates daily.")
-                self.snapshot.appendSections([popularSetion])
-                self.snapshot.appendItems(normalItems, toSection: popularSetion)
+                snapshot.appendSections([popularSetion])
+                snapshot.appendItems(normalItems, toSection: popularSetion)
 
                 
                 let upcomingSection = Section.list("List of upcoming movies in theatres")
                 let listItems = result.upcoming.results.map { Item.list($0) }
-                self.snapshot.appendSections([upcomingSection])
-                self.snapshot.appendItems(listItems, toSection: upcomingSection)
+                snapshot.appendSections([upcomingSection])
+                snapshot.appendItems(listItems, toSection: upcomingSection)
 
-                self.dataSource?.apply(self.snapshot)
+                self.dataSource?.apply(snapshot)
 
                 
             }.disposed(by: disposeBag)
+        
+        
 
     }
     
     private func bindView() {
-        retryButton.rx.tap.bind{ [weak self] in
-            self?.trigger.onNext(true)
+        buttonView.tvButton.rx.tap.bind {[weak self] _ in
+            self?.tvTrigger.onNext(())
+        }.disposed(by: disposeBag)
+        
+        buttonView.movieButton.rx.tap.bind {[weak self] _ in
+            self?.movieTrigger.onNext(())
         }.disposed(by: disposeBag)
     }
  

@@ -31,6 +31,10 @@
 		BFD208F529821C510090AB9C /* MovieResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD208F429821C510090AB9C /* MovieResult.swift */; };
 		BFD208F829824D450090AB9C /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = BFD208F729824D450090AB9C /* Kingfisher */; };
 		BFD208FA29824D6F0090AB9C /* CollectionViewSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD208F929824D6F0090AB9C /* CollectionViewSection.swift */; };
+		BFD208FC29824F420090AB9C /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD208FB29824F420090AB9C /* ButtonView.swift */; };
+		BFD208FE29824F6E0090AB9C /* CategoryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD208FD29824F6E0090AB9C /* CategoryButton.swift */; };
+		BFD20900298258DA0090AB9C /* TV.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD208FF298258DA0090AB9C /* TV.swift */; };
+		BFD20902298259C00090AB9C /* TVListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD20901298259C00090AB9C /* TVListModel.swift */; };
 		BFFC960C2930826F00147B30 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFC960B2930826F00147B30 /* Item.swift */; };
 		BFFC960F2930A03D00147B30 /* Const.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFC960E2930A03D00147B30 /* Const.swift */; };
 		BFFC96122930A5CF00147B30 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = BFFC96112930A5CF00147B30 /* SnapKit */; };
@@ -80,6 +84,10 @@
 		BFC1917E293476060097CCAB /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		BFD208F429821C510090AB9C /* MovieResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieResult.swift; sourceTree = "<group>"; };
 		BFD208F929824D6F0090AB9C /* CollectionViewSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewSection.swift; sourceTree = "<group>"; };
+		BFD208FB29824F420090AB9C /* ButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonView.swift; sourceTree = "<group>"; };
+		BFD208FD29824F6E0090AB9C /* CategoryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryButton.swift; sourceTree = "<group>"; };
+		BFD208FF298258DA0090AB9C /* TV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TV.swift; sourceTree = "<group>"; };
+		BFD20901298259C00090AB9C /* TVListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVListModel.swift; sourceTree = "<group>"; };
 		BFFC960B2930826F00147B30 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		BFFC960E2930A03D00147B30 /* Const.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Const.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -153,6 +161,8 @@
 			isa = PBXGroup;
 			children = (
 				BFAF3B0A29407394001CE10B /* DefaultLabel.swift */,
+				BFD208FB29824F420090AB9C /* ButtonView.swift */,
+				BFD208FD29824F6E0090AB9C /* CategoryButton.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -217,7 +227,9 @@
 			isa = PBXGroup;
 			children = (
 				BFC1917C293345590097CCAB /* Movie.swift */,
+				BFD208FF298258DA0090AB9C /* TV.swift */,
 				BFAF3B07294067B4001CE10B /* MovieListModel.swift */,
+				BFD20901298259C00090AB9C /* TVListModel.swift */,
 				BFD208F429821C510090AB9C /* MovieResult.swift */,
 			);
 			path = Domain;
@@ -394,7 +406,11 @@
 				BFC1917A293344E20097CCAB /* NetworkProvider.swift in Sources */,
 				BFBEA5F929307AE1001DEB4A /* SceneDelegate.swift in Sources */,
 				BFFC960F2930A03D00147B30 /* Const.swift in Sources */,
+				BFD20902298259C00090AB9C /* TVListModel.swift in Sources */,
+				BFD208FE29824F6E0090AB9C /* CategoryButton.swift in Sources */,
 				BFAF3B0D294079AE001CE10B /* DefaultHeaderView.swift in Sources */,
+				BFD20900298258DA0090AB9C /* TV.swift in Sources */,
+				BFD208FC29824F420090AB9C /* ButtonView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
