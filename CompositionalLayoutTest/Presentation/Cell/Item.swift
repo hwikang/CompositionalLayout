@@ -16,6 +16,7 @@ enum Section: Hashable {
 
 enum Item: Hashable {
     case bigImage(Movie)
-    case normal(Movie)
+    case normal(Content)
     case list(Movie)
 }
+

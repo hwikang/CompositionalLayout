@@ -28,7 +28,7 @@ class ViewController: UIViewController {
         setUI()
         bindViewModel()
         bindView()
-        movieTrigger.onNext(())
+        tvTrigger.onNext(())
     }
     
     private func setUI(){
@@ -61,23 +61,34 @@ class ViewController: UIViewController {
                 snapshot.appendSections([Section.banner])
                 snapshot.appendItems(bannerItems, toSection: Section.banner)
 
-                let normalItems = result.popular.results.map {Item.normal($0) }
+                let normalItems = result.popular.results.map {Item.normal(Content(movie: $0)) }
                 let popularSetion = Section.horizontal("List of the current popular movies on TMDB. This list updates daily.")
                 snapshot.appendSections([popularSetion])
                 snapshot.appendItems(normalItems, toSection: popularSetion)
 
-                
                 let upcomingSection = Section.list("List of upcoming movies in theatres")
                 let listItems = result.upcoming.results.map { Item.list($0) }
                 snapshot.appendSections([upcomingSection])
                 snapshot.appendItems(listItems, toSection: upcomingSection)
-
+                
                 self.dataSource?.apply(snapshot)
 
                 
             }.disposed(by: disposeBag)
         
         
+        output.tvList.observeOn(MainScheduler.instance)
+            .bind {[unowned self] result in
+                var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+                let tvItems = result.map{Item.normal(Content(tv: $0))}
+                let tvSection = Section.double("")
+                snapshot.appendSections([tvSection])
+                snapshot.appendItems(tvItems, toSection: tvSection)
+                
+                self.dataSource?.apply(snapshot)
+
+            }
+            .disposed(by: disposeBag)
 
     }
     
@@ -116,7 +127,7 @@ extension ViewController {
                switch section {
                case .banner:
                    return CollectionViewSection.createNowPlayingSection()
-            
+                   
                case .horizontal(_):
                    let section = CollectionViewSection.createNormalCarouselSection()
                    let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(44))
@@ -132,6 +143,9 @@ extension ViewController {
 
                    section.boundarySupplementaryItems = [header]
                    
+                   return section
+               case .double(_):
+                   let section = CollectionViewSection.createDoubleSection()
                    return section
                default:
                    return CollectionViewSection.createNowPlayingSection()
@@ -153,7 +167,7 @@ extension ViewController {
                    return cell
                case .normal(let data):
                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NormalCarouselCollectionViewCell.id, for: indexPath) as? NormalCarouselCollectionViewCell else {fatalError()}
-                   cell.configure(name: data.title, vote: data.vote, url: data.posterUrl)
+                   cell.configure(name: data.title, vote: data.vote, url: data.posterUrl, overView: data.overview)
                    return cell
                case .list(let data):
                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ListCarouselCollectionViewCell.id, for: indexPath) as? ListCarouselCollectionViewCell else {fatalError()}

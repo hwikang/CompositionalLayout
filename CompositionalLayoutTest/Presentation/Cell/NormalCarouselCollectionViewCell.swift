@@ -10,6 +10,11 @@ import UIKit
 class NormalCarouselCollectionViewCell: UICollectionViewCell {
     static let id = "NormalCarouselCell"
     let label = DefaultTitleLabel()
+    let overviewLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 2
+        return label
+    }()
     let image: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.masksToBounds = true
@@ -23,9 +28,10 @@ class NormalCarouselCollectionViewCell: UICollectionViewCell {
           self.addSubview(image)
           self.addSubview(label)
           self.addSubview(voteLabel)
+          self.addSubview(overviewLabel)
           image.snp.makeConstraints { make in
               make.top.left.right.equalToSuperview()
-              make.height.equalToSuperview().multipliedBy(0.8)
+              make.height.equalTo(CellLayout.normalImageHeight)
           }
           label.snp.makeConstraints { make in
               make.top.equalTo(image.snp.bottom).offset(CellLayout.defaultMargin)
@@ -35,16 +41,21 @@ class NormalCarouselCollectionViewCell: UICollectionViewCell {
               make.top.equalTo(label.snp.bottom).offset(CellLayout.defaultMargin)
               make.leading.equalToSuperview()
           }
+          overviewLabel.snp.makeConstraints { make in
+              make.top.equalTo(voteLabel.snp.bottom).offset(CellLayout.defaultMargin)
+              make.leading.trailing.equalToSuperview()
+          }
+          
       }
     override func prepareForReuse() {
         super.prepareForReuse()
         self.image.image = nil
     }
       
-    public func configure(name:String, vote: String, url:String){
+    public func configure(name:String, vote: String, url:String, overView:String){
         label.text = name
         voteLabel.text = vote
-        
+        overviewLabel.text = overView
         image.kf.setImage(with: URL(string: url))
     
     } 

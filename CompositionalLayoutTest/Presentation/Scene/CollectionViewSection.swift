@@ -51,4 +51,19 @@ class CollectionViewSection {
         return section
 
     }
+    
+    static func createDoubleSection() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        item.contentInsets = NSDirectionalEdgeInsets(top: CellLayout.contentPadding, leading: CellLayout.contentPadding, bottom: CellLayout.contentPadding, trailing: CellLayout.contentPadding)
+
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(Layout.NormalCarouselCellHeight))
+
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 2)
+        let section = NSCollectionLayoutSection(group: group)
+        return section
+
+    }
+    
+    
 }
