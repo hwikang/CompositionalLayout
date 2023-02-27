@@ -45,7 +45,7 @@ class ListCarouselCollectionViewCell: UICollectionViewCell {
     public func configure(name:String, date: String, url:String){
         label.text = name
         dateLabel.text = "개봉일: \(date)"
-        image.load(url: url)
+        image.kf.setImage(with: URL(string: url))
     
     }
 

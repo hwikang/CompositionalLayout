@@ -1,32 +1,32 @@
 //
-//  Movie.swift
+//  TV.swift
 //  CompositionalLayoutTest
 //
-//  Created by 강휘 on 2022/11/27.
+//  Created by Dumveloper on 2023/01/26.
 //
 
 import Foundation
 
-struct Movie: Hashable, Decodable {
-    let title: String
+struct TV: Decodable, Hashable {
+    let name: String
     let overview: String
     let posterUrl: String
     let vote: String
-    let releaseDate: String
+    let firstAirDate: String
 
     private enum CodingKeys: String, CodingKey {
-        case title
+        case name
         case overview
         case posterPath = "poster_path"
         case voteAverage = "vote_average"
         case voteCount = "vote_count"
-        case releaseDate = "release_date"
+        case firstAirDate = "first_air_date"
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
-        title = try container.decode(String.self, forKey: .title)
+        name = try container.decode(String.self, forKey: .name)
         overview = try container.decode(String.self, forKey: .overview)
         let path = try container.decode(String.self, forKey: .posterPath)
         posterUrl = "https://image.tmdb.org/t/p/w500/\(path)"
@@ -34,10 +34,7 @@ struct Movie: Hashable, Decodable {
         let voteCount = try container.decode(Int.self, forKey: .voteCount)
 
         vote = "\(voteAvg)(\(voteCount))"
-        releaseDate = try container.decode(String.self, forKey: .releaseDate)
+        firstAirDate = try container.decode(String.self, forKey: .firstAirDate)
 
     }
-
-    
 }
-

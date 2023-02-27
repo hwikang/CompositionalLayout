@@ -12,8 +12,10 @@ class DefaultHeaderView: UICollectionReusableView {
     let titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 20,weight: .bold)
+        label.numberOfLines = 0
         return label
     }()
+    
     let descLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14,weight: .light)
@@ -26,8 +28,9 @@ class DefaultHeaderView: UICollectionReusableView {
         self.addSubview(titleLabel)
         self.addSubview(descLabel)
         titleLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(CellLayout.contentPadding)
+            make.leading.trailing.equalToSuperview().offset(CellLayout.contentPadding)
             make.top.equalToSuperview()
+            
         }
         descLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(CellLayout.contentPadding)
@@ -35,7 +38,7 @@ class DefaultHeaderView: UICollectionReusableView {
         }
     }
     
-    public func configure(title:String,desc:String){
+    public func configure(title:String,desc:String = ""){
         titleLabel.text = title
         descLabel.text = desc
       }

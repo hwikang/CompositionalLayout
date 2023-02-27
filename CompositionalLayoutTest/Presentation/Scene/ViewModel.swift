@@ -10,49 +10,38 @@ import RxSwift
 import RxCocoa
 
 class ViewModel {
-    private let network: MovieNetwork
-    
+    private let movieNetwork: MovieNetwork
+    private let tvNetwork: TVNetwork
     struct Input {
-        let trigger: Observable<Bool>
+        let tvTrigger: Observable<Void>
+        let movieTrigger: Observable<Void>
     }
     
     struct Output{
-        let nowPlayingList: Observable<MovieListModel>
-        let popularList: Observable<MovieListModel>
-        let upComingList: Observable<MovieListModel>
+        let tvList: Observable<[TV]>
+        let movieList: Observable<MovieResult>
     }
     init() {
-        
-        self.network = NetworkProvider().makeMovieNetwork()
+        let provider = NetworkProvider()
+        self.movieNetwork = provider.makeMovieNetwork()
+        self.tvNetwork = provider.makeTVNetwork()
     }
     
     func transform(input: Input) -> Output {
-        let nowPlayingList = input.trigger.flatMapLatest { _ -> Observable<MovieListModel> in
-            return self.network.getNowPlayingList()
-
-                .catchError({ error in
-                    print("Catch \(error)")
-                    return .just(MovieListModel.placeHolder)
-                })
-                
+        
+        let tvList = input.tvTrigger.flatMapLatest { _ -> Observable<[TV]> in
+            return self.tvNetwork.getTopRatedList().map { model in
+                return model.results
+            }
         }
         
-        let popularList = input.trigger.flatMapLatest { _ -> Observable<MovieListModel> in
-            return self.network.getPopularList()
-                .catchError({ error in
-                    print("Catch \(error)")
-                    return .just(MovieListModel.placeHolder)
-                })
+        let movieList = input.movieTrigger.flatMapLatest { _ -> Observable<MovieResult> in
+            return Observable.combineLatest(self.movieNetwork.getUpcomingList(), self.movieNetwork.getPopularList(), self.movieNetwork.getNowPlayingList()) { upcoming,popular,nowplaying -> MovieResult in
+                return MovieResult(upcoming: upcoming, popular: popular, nowPlaying: nowplaying)
                 
+            }
         }
-        let upcomingList = input.trigger.flatMapLatest { _ -> Observable<MovieListModel> in
-            return self.network.getUpcomingList()
-                .catchError({ error in
-                    print("Catch \(error)")
-                    return .just(MovieListModel.placeHolder)
-                })
-                
-        }
-        return Output(nowPlayingList: nowPlayingList, popularList: popularList, upComingList: upcomingList)
+        
+        return Output(tvList:tvList, movieList:movieList)
     }
 }
